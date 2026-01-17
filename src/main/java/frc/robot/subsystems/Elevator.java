@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+//TODO: Keep this subsystem as an example/template because it includes the limit switch in case we need it
 public class Elevator extends SubsystemBase {
     private final TalonSRX firstElevatorMotor = new TalonSRX(22);
     private final TalonSRX secondELevatorMotor = new TalonSRX(21);

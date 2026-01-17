@@ -1,8 +1,6 @@
 package frc.robot.autos;
 
 import frc.robot.Constants;
-import frc.robot.commands.AutoElevator;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Timer;
@@ -21,11 +19,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class exampleAuto extends SequentialCommandGroup {
-    private final Timer moveTimer = new Timer();
+public class backwardsLineAuto extends SequentialCommandGroup {
 
-    public exampleAuto(Swerve s_Swerve, Elevator s_Elevator, Arm s_Arm){
-        moveTimer.start();
+    public backwardsLineAuto(Swerve s_Swerve, Elevator s_Elevator){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -41,8 +37,7 @@ public class exampleAuto extends SequentialCommandGroup {
                 // Pass through these two interior waypoints, making a straight line backwards
                 List.of(new Translation2d(-1, 0), new Translation2d(-2, 0)),
                 // End 3 meters behind of where we started, facing forward
-                new Pose2d(-3, 0, new Rotation2d(0)),
-                config);        
+                new Pose2d(-3, 0, new Rotation2d(0)), config);        
 
         var thetaController =
             new ProfiledPIDController(
@@ -59,9 +54,6 @@ public class exampleAuto extends SequentialCommandGroup {
                 thetaController,
                 s_Swerve::setModuleStates,
                 s_Swerve);
-        
-        AutoElevator autoScoreCommand =
-            new AutoElevator(s_Elevator, s_Arm, moveTimer);
 
         addCommands(
             new InstantCommand(() -> s_Swerve.setPose(exampleTrajectory.getInitialPose())),

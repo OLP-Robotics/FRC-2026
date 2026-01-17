@@ -32,25 +32,15 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     
     /* Co_Driver Buttons */
-    private final JoystickButton controlFunnel = new JoystickButton(co_driver, XboxController.Button.kX.value);
-    private final JoystickButton revreseFunnel = new JoystickButton(co_driver, XboxController.Button.kB.value);
-    private final JoystickButton controlIntake = new JoystickButton(co_driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton reverseIntake = new JoystickButton(co_driver, XboxController.Button.kLeftBumper.value);
-    // private final JoystickButton controlIntake2 = new JoystickButton(co_driver, XboxController.Axis.kLeftTrigger.value);
+    // TODO: Add new buttons
 
 
     /* Co_Driver Controls */
     private final int controlElevator = XboxController.Axis.kLeftY.value;
-    private final int controlAlgae = XboxController.Axis.kRightY.value;
-
-
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final Funnel s_Funnel = new Funnel();
-    private final Arm s_Arm = new Arm();
     private final Elevator s_Elevator = new Elevator();
-    private final Algae s_Algae = new Algae();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -65,33 +55,10 @@ public class RobotContainer {
             )
         );
 
-        s_Funnel.setDefaultCommand(
-            new TeleopFunnel(
-                s_Funnel,
-                () -> controlFunnel.getAsBoolean(),
-                () -> revreseFunnel.getAsBoolean()
-            )
-        );
-
-        s_Arm.setDefaultCommand(
-            new TeleopArm(
-             s_Arm,
-                () -> controlIntake.getAsBoolean(),
-                () -> reverseIntake.getAsBoolean()
-            )
-        );
-
         s_Elevator.setDefaultCommand(
             new TeleopElevator(
             s_Elevator,
              () -> co_driver.getRawAxis(controlElevator)
-            )
-        );
-
-        s_Algae.setDefaultCommand(
-            new TeleopAlgae(
-            s_Algae,
-            () -> co_driver.getRawAxis(controlAlgae)
             )
         );
 
@@ -115,8 +82,12 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
+    public Command getBackwardsLineAuto() {
         // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve, s_Elevator, s_Arm);
+        return new backwardsLineAuto(s_Swerve, s_Elevator);
+    }
+    public Command getSPatternAuto() {
+        // An ExampleCommand will run in autonomous
+        return new sCurve(s_Swerve, s_Elevator);
     }
 }
