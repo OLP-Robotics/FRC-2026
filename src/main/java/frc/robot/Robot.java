@@ -32,6 +32,8 @@ public class Robot extends TimedRobot {
   private static final String autoBackwardsLine = "backwards line";
   private static final String autoSPattern = "s-shape";
 
+
+  
   /**
    * This function is run when the robot is first started up and should be used
    * for any
