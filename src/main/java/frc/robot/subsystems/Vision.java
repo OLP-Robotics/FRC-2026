@@ -38,7 +38,7 @@ public class Vision extends SubsystemBase {
         visionThread.start();
     }
 
-    public void apriltagVisionThreadProc(){
+    public void apriltagVisionThreadProc() {
         var detector = new AprilTagDetector();
         // look for tag36h11, correct 1 error bit (hamming distance 1)
         // hamming 1 allocates 781KB, 2 allocates 27.4 MB, 3 allocates 932 MB
@@ -56,6 +56,7 @@ public class Vision extends SubsystemBase {
         UsbCamera camera = CameraServer.startAutomaticCapture();
         // Set the resolution
         camera.setResolution(640, 480);
+        camera.setFPS(30);
 
         // Get a CvSink. This will capture Mats from the camera
         CvSink cvSink = CameraServer.getVideo();
@@ -169,38 +170,51 @@ public class Vision extends SubsystemBase {
             // -0.058: around -6 cm to left of camera
             // 0.010: around 1 cm down
             // 0.578: around 58 cm away from camera (in front of)
-            System.out.format("%s position(x,y,z): %.3f, %.3f, %.3f\n", idAprilTag, (posAndRot[0] * 100),
-                    (posAndRot[1] * 100), (posAndRot[2] * 100));
+            // System.out.format("%s position(x,y,z): %.3f, %.3f, %.3f\n", idAprilTag, (posAndRot[0] * 100),
+            //         (posAndRot[1] * 100), (posAndRot[2] * 100));
 
             // System.out.format("%s rotation(x,y,z): %.3f, %.3f, %.3f\n", idAprilTag,
             // Units.radiansToDegrees(posAndRot[3]),
             // Units.radiansToDegrees(posAndRot[4]), Units.radiansToDegrees(posAndRot[5]));
 
-            // TODO: Include a field in the dashboard to see what value that is
-            // TODO: Translate decimal values from the fields to real-world units
-            // TODO: Consider integrating into 2025 code
-
             SmartDashboard.putNumber("AprilTag ID", idAprilTag);
 
-            SmartDashboard.putNumber("Position X (cm)", posAndRot[0] * 100);
-            SmartDashboard.putNumber("Position Y (cm)", posAndRot[1] * 100);
-            SmartDashboard.putNumber("Position Z (cm)", posAndRot[2] * 100);
+            SmartDashboard.putNumber("Position X (m)", posAndRot[0]);
+            SmartDashboard.putNumber("Position Y (m)", posAndRot[1]);
+            SmartDashboard.putNumber("Position Z (m)", posAndRot[2]);
 
-            SmartDashboard.putNumber("Rotation X (degrees)", Units.radiansToDegrees(posAndRot[3]));
-            SmartDashboard.putNumber("Rotation Y (degrees)", Units.radiansToDegrees(posAndRot[4]));
-            SmartDashboard.putNumber("Rotation Z (degrees)", Units.radiansToDegrees(posAndRot[5]));
+            SmartDashboard.putNumber("Rotation X (deg)", Units.radiansToDegrees(posAndRot[3]));
+            SmartDashboard.putNumber("Rotation Y (deg)", Units.radiansToDegrees(posAndRot[4]));
+            SmartDashboard.putNumber("Rotation Z (deg)", Units.radiansToDegrees(posAndRot[5]));
 
             double thresholdX = 0.005;
+            double centerX = 0.0;
+            double thresholdZ = 0.05;
+            double centerZ = 1.1;
 
             switch (idAprilTag) {
                 case 1:
-                    if (posAndRot[0] < -thresholdX) { // april tag is on the left
-                        SmartDashboard.putString("Move X", "move left");
-                    } else if ((posAndRot[0] >= -thresholdX) && (posAndRot[2] <= thresholdX)) { // april tag is in the
-                                                                                                // center
-                        SmartDashboard.putString("Move X", "don't move");
-                    } else if (posAndRot[0] > thresholdX) { // april tag is on the right
-                        SmartDashboard.putString("Move X", "move right");
+                    //Move left/right according to reported X position
+                    // april tag is on the left
+                    if (posAndRot[0] < (-thresholdX + centerX)) {
+                        SmartDashboard.putString("Move X", "left");
+                    // april tag is in the center
+                    } else if ((posAndRot[0] >= (-thresholdX + centerX)) && (posAndRot[0] <= (thresholdX + centerX))) {
+                        SmartDashboard.putString("Move X", "stop");
+                    // april tag is on the right
+                    } else if (posAndRot[0] > (thresholdX + centerX)) {
+                        SmartDashboard.putString("Move X", "right");
+                    }
+                    //Move forward/backwards according to reported Z
+                    // april tag is near robot
+                    if (posAndRot[2] < (-thresholdZ + centerZ)) {
+                        SmartDashboard.putString("Move Z", "backward");
+                    // april tag is corrrect distance away
+                    } else if ((posAndRot[2] >= (-thresholdZ + centerZ)) && (posAndRot[2] <= (thresholdZ + centerZ))) { 
+                        SmartDashboard.putString("Move Z", "stop");
+                    // april tag is farther from the robot
+                    } else if (posAndRot[2] > (thresholdZ + centerZ)) {
+                        SmartDashboard.putString("Move Z", "forward");
                     }
                     break;
             }

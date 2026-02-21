@@ -36,8 +36,9 @@ public class RobotContainer {
 
     /* Co_Driver Buttons */
     // TODO: Add new buttons
-    private final JoystickButton shoot = new JoystickButton(co_driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton reverseShoot = new JoystickButton(co_driver, XboxController.Button.kRightBumper.value);
+    // TODO: change buttons back to co_driver
+    private final JoystickButton shoot = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton reverseShoot = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
     /* Co_Driver Controls */
     private final int controlElevator = XboxController.Axis.kLeftY.value;

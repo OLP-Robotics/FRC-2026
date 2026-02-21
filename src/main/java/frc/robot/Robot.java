@@ -47,8 +47,6 @@ public class Robot extends TimedRobot {
     m_chooser.addOption(autoBackwardsLine, autoBackwardsLine);
     m_chooser.addOption(autoSPattern, autoSPattern);
     SmartDashboard.putData("Auto choices", m_chooser);
-
-    CameraServer.startAutomaticCapture();
   }
 
   /**
