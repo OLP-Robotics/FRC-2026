@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private static final String autoDoNothing = "do nothing";
   private static final String autoBackwardsLine = "backwards line";
   private static final String autoSPattern = "s-shape";
   private static final String autoShoot = "shoot";
@@ -43,8 +44,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings
     m_robotContainer = new RobotContainer();
     // This will put our autonomous chooser on the dashboard.
+    m_chooser.addOption(autoDoNothing, autoDoNothing);
     m_chooser.addOption(autoBackwardsLine, autoBackwardsLine);
     m_chooser.addOption(autoSPattern, autoSPattern);
+    m_chooser.addOption(autoShoot, autoShoot);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
 
@@ -91,6 +94,9 @@ public class Robot extends TimedRobot {
 
     switch (m_autoSelected) {
       // Put custom auto code here
+      case autoDoNothing: // do nothing
+        break;
+
       case autoSPattern: // s-shape
         m_autonomousCommand = m_robotContainer.getSPatternAuto();
         SmartDashboard.putString("Selected Auto: ", (autoSPattern).toString());
