@@ -35,19 +35,26 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     /* Co_Driver Buttons */
-    // TODO: Add new buttons
-    // TODO: change buttons back to co_driver
-    private final JoystickButton shoot = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton reverseShoot = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton intakeBall = new JoystickButton(co_driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton outakeBall = new JoystickButton(co_driver, XboxController.Button.kLeftBumper.value);
+
+    private final JoystickButton shootAt9 = new JoystickButton(co_driver, XboxController.Button.kY.value);
+    private final JoystickButton shootAt8 = new JoystickButton(co_driver, XboxController.Button.kB.value);
+    private final JoystickButton shootAt7 = new JoystickButton(co_driver, XboxController.Button.kA.value);
+    private final JoystickButton shootAt6 = new JoystickButton(co_driver, XboxController.Button.kX.value);
 
     /* Co_Driver Controls */
-    private final int controlElevator = XboxController.Axis.kLeftY.value;
+    // private final int controlElevator = XboxController.Axis.kLeftY.value;
+    private final int intakeSlapDown = XboxController.Axis.kLeftY.value;
+    private final int shootBall = XboxController.Axis.kLeftTrigger.value; // fix name
+    private final int reverseShootBall = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final Elevator s_Elevator = new Elevator();
-    private final Shooter s_Shooter = new Shooter();
     private final Vision s_Vision = new Vision();
+    private final Shooter s_Shooter = new Shooter();
+    private final IntakeSlap s_IntakeSlap = new IntakeSlap();
+    private final IntakeWheels s_IntakeWheels = new IntakeWheels();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -61,22 +68,30 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> robotCentric.getAsBoolean()));
 
-        s_Elevator.setDefaultCommand(
-                new TeleopElevator(
-                        s_Elevator,
-                        () -> co_driver.getRawAxis(controlElevator)));
+        s_Vision.setDefaultCommand(
+                new TeleopVision(
+                        s_Vision));
 
         s_Shooter.setDefaultCommand(
                 new TeleopShooter(
                         s_Shooter,
-                        () -> shoot.getAsBoolean(),
-                        () -> reverseShoot.getAsBoolean()));
+                        () -> co_driver.getRawAxis(shootBall),
+                        () -> co_driver.getRawAxis(reverseShootBall),
+                        () -> shootAt9.getAsBoolean(),
+                        () -> shootAt8.getAsBoolean(),
+                        () -> shootAt7.getAsBoolean(),
+                        () -> shootAt6.getAsBoolean()));
 
-        s_Vision.setDefaultCommand(
-                new TeleopVision(
-                        s_Vision
-                )
-        );
+        s_IntakeWheels.setDefaultCommand(
+                new TeleopIntakeWheels(
+                        s_IntakeWheels,
+                        () -> intakeBall.getAsBoolean(),
+                        () -> outakeBall.getAsBoolean()));
+
+        s_IntakeSlap.setDefaultCommand(
+                new TeleopIntakeSlap(
+                        s_IntakeSlap,
+                        () -> co_driver.getRawAxis(intakeSlapDown)));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -102,11 +117,15 @@ public class RobotContainer {
      */
     public Command getBackwardsLineAuto() {
         // An ExampleCommand will run in autonomous
-        return new backwardsLineAuto(s_Swerve, s_Elevator);
+        return new backwardsLineAuto(s_Swerve);
     }
 
     public Command getSPatternAuto() {
         // An ExampleCommand will run in autonomous
-        return new sCurve(s_Swerve, s_Elevator);
+        return new sCurve(s_Swerve);
+    }
+
+    public Command getShootAuto() {
+        return new shootOnlyAuto(s_Shooter);
     }
 }

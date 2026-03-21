@@ -31,9 +31,8 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private static final String autoBackwardsLine = "backwards line";
   private static final String autoSPattern = "s-shape";
+  private static final String autoShoot = "shoot";
 
-
-  
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -100,6 +99,11 @@ public class Robot extends TimedRobot {
       case autoBackwardsLine: // backwards
         m_autonomousCommand = m_robotContainer.getBackwardsLineAuto();
         SmartDashboard.putString("Selected Auto: ", (autoBackwardsLine).toString());
+        break;
+
+      case autoShoot:
+        m_autonomousCommand = m_robotContainer.getShootAuto();
+        SmartDashboard.putString("Selected Auto: ", (autoShoot).toString());
         break;
 
       default: // do nothing

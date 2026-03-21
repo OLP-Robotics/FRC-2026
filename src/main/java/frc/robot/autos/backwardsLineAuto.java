@@ -1,9 +1,7 @@
 package frc.robot.autos;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
-import edu.wpi.first.wpilibj.Timer;
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class backwardsLineAuto extends SequentialCommandGroup {
 
-    public backwardsLineAuto(Swerve s_Swerve, Elevator s_Elevator){
+    public backwardsLineAuto(Swerve s_Swerve){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
